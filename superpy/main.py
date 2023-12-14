@@ -9,6 +9,9 @@ __human_name__ = "superpy"
 
 
 # Your code below this line.
+inventory_file='./inventory.csv'
+sold_file='./sold.csv'
+
 def main():
     pass
 
