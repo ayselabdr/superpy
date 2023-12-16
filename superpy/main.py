@@ -163,6 +163,24 @@ def report_profit(daterange):
 # For the sake of convinience, we assume we can only sell the item next day after it was bought
 # And all prices are int, just because
 def sell(product_name, sell_price):
+    for items in list_inventory():
+        counter=0
+        if (items[0]==product_name and 
+        datetime.strptime(items[3], '%Y-%m-%d')>get_date() and 
+        datetime.strptime(items[1], '%Y-%m-%d')<get_date() and 
+        int(items[2])<sell_price):
+            counter+=1
+            with open("./sold.csv", mode="a") as sold:
+                sold_writer=csv.writer(sold, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+                sold_writer.writerow([product_name, datetime.strftime(get_date(), '%Y-%m-%d'), sell_price, items[2]])
+            print(f'One {product_name} sold!')
+            break
+    if counter==0:
+        print("Out of stock, buddy")
+
+
+
+def main():
     parser = argparse.ArgumentParser(description='Welcome to SuperPy!')
 
     subparsers = parser.add_subparsers(dest='command')
@@ -226,6 +244,8 @@ def sell(product_name, sell_price):
         reset_date()
     else:
         print("Unknown command")
+
+
 
 if __name__ == "__main__":
     main()
