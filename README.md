@@ -4,7 +4,7 @@ Below you will find the explanation of this little command-line tool powered by 
 
 ## 3 Notable functions
 1. **Reporting system** - you can ask report on profit/revenue for some given date/daterange such as _YYYY-MM-DD, YYYY-MM, YYYY, yesterday, today, tomorrow_. You can also ask for inventory report - that will always show for today.
-Commands supported such as:
+Commands supported such as:</br>
 `python3 main.py report inventory`</br>
 `python3 main.py report profit --date today`</br>
 `python3 main.py report profit --date yesterday`</br>
@@ -24,7 +24,7 @@ This was quite a play with dates and ranges and took a lot of time testing. The 
 
 2. **Date system** - current date is stored in the file called `date`. That date can be modified using advance date option to move it further or reset it to actual today's date. Date is stored in YYYY-MM-DD format.
 
-Commands supported such as:
+Commands supported such as:</br>
 `python3 main.py date today`</br>
 `python3 main.py date reset_date`</br>
 `python3 main.py date advance_date --days 2`</br>
@@ -42,4 +42,4 @@ Implementing this was not difficult, but rather tedious, as it took some testing
 
 **MISC**
 Some example values were filled for inventory and sold items using GPT3.5 - just to generate a whole bunch of examples faster.
-
+You can add yours using `buy` and `sell` commands as intended of course :)
