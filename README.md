@@ -2,7 +2,7 @@
 
 Below you will find the explanation of this little command-line tool powered by argparse, csv, datetime, and several liters of tea.
 
-## 3 Notable functions
+## Three Notable functions
 1. **Reporting system** - you can ask report on profit/revenue for some given date/daterange such as _YYYY-MM-DD, YYYY-MM, YYYY, yesterday, today, tomorrow_. You can also ask for inventory report - that will always show for today.
 Commands supported such as:</br>
 `python3 main.py report inventory`</br>
@@ -40,6 +40,6 @@ Implementing this was not difficult, but rather tedious, as it took some testing
 
 ***Exporting to JSON, along with using Rich for output, are the extra 2 function picked.***
 
-**MISC**
+**MISC**</br>
 Some example values were filled for inventory and sold items using GPT3.5 - just to generate a whole bunch of examples faster.
 You can add yours using `buy` and `sell` commands as intended of course :)
