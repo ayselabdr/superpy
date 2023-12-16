@@ -9,7 +9,7 @@ __human_name__ = "superpy"
 
 
 # Your code below this line.
-
+from rich import print
 
 # Function to get the date from our date file.
 # Returns a datetime object.
@@ -56,27 +56,38 @@ def list_inventory():
     with open('sold.csv', 'r') as sold:
         sold_reader=csv.reader(sold)
         list_sold=list(sold_reader)
+    new_stock=[]
     for sold_item in list_sold:
         for stock_item in list_stock:
             if sold_item[0]==stock_item[0]:
-                if datetime.strptime(sold_item[1], '%Y-%m-%d')<datetime.strptime(stock_item[3], '%Y-%m-%d'):
-                    if datetime.strptime(sold_item[1], '%Y-%m-%d')>=datetime.strptime(stock_item[1], '%Y-%m-%d'):
-                        list_stock.remove(stock_item)
+                if (datetime.strptime(sold_item[1], '%Y-%m-%d')>datetime.strptime(stock_item[3], '%Y-%m-%d') and
+                datetime.strptime(sold_item[1], '%Y-%m-%d')<datetime.strptime(stock_item[1], '%Y-%m-%d') and
+                datetime.strptime(sold_item[1], '%Y-%m-%d')>get_date()):
+                    new_stock.append(stock_item)
     for stock_item in list_stock:
-        if get_date()>datetime.strptime(stock_item[3], '%Y-%m-%d'):
-            list_stock.remove(stock_item)
-    return(list_stock)
+        if (get_date()>datetime.strptime(stock_item[1], '%Y-%m-%d') and get_date()<datetime.strptime(stock_item[3], '%Y-%m-%d')):
+            new_stock.append(stock_item)
+    print(len(new_stock))
+    if len(new_stock)>0:
+        with open("./reports_log.csv", mode="a") as reports:
+            reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+            reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "inventory", new_stock])
+    else:    
+        with open("./reports_log.csv", mode="a") as reports:
+            reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+            reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "inventory", "It is empty"])
+    return(new_stock)
 
 
 # Function to calculate revenue based on date or month or year
 # Accepts date in formats like YYYY-MM-DD, YYYY-MM, YYYY, yesterday, today, tomorrow
 def report_revenue(daterange):
     if daterange.lower()=="today":
-        datetime.strftime(get_date(), '%Y-%m-%d')
+        daterange=datetime.strftime(get_date(), '%Y-%m-%d')
     if daterange.lower()=="yesterday":
-        datetime.strftime(get_date()-timedelta(days=1), '%Y-%m-%d')
+        daterange=datetime.strftime(get_date()-timedelta(days=1), '%Y-%m-%d')
     if daterange.lower()=="tomorrow":
-        datetime.strftime(get_date()+timedelta(days=1), '%Y-%m-%d')
+        daterange=datetime.strftime(get_date()+timedelta(days=1), '%Y-%m-%d')
     daterange=str(daterange)
     if len(daterange)>4:
         dates=daterange.split('-')
@@ -105,19 +116,25 @@ def report_revenue(daterange):
         else:
             counter+=1
     if counter==len(list_sold):
+        with open("./reports_log.csv", mode="a") as reports:
+            reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+            reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "revenue", f"Requested for: {daterange} - No revenue :( )"])
         print("No revenue in that date range!")
     else:
+        with open("./reports_log.csv", mode="a") as reports:
+            reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+            reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "revenue", f"Requested for: {daterange} - revenue is {revenue_total}"])
         return(revenue_total)
 
 # Function to calculate profit based on date or month or year
 # Accepts date in formats like YYYY-MM-DD, YYYY-MM, YYYY, yesterday, today, tomorrow
 def report_profit(daterange):
     if daterange.lower()=="today":
-        datetime.strftime(get_date(), '%Y-%m-%d')
+        daterange=datetime.strftime(get_date(), '%Y-%m-%d')
     if daterange.lower()=="yesterday":
-        datetime.strftime(get_date()-timedelta(days=1), '%Y-%m-%d')
+        daterange=datetime.strftime(get_date()-timedelta(days=1), '%Y-%m-%d')
     if daterange.lower()=="tomorrow":
-        datetime.strftime(get_date()+timedelta(days=1), '%Y-%m-%d')
+        daterange=datetime.strftime(get_date()+timedelta(days=1), '%Y-%m-%d')
     daterange=str(daterange)
     if len(daterange)>4:
         dates=daterange.split('-')
@@ -151,8 +168,14 @@ def report_profit(daterange):
         else:
             counter+=1
     if counter==len(list_sold):
+        with open("./reports_log.csv", mode="a") as reports:
+            reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+            reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "profits", f"Requested for: {daterange} - No profits :( )"])
         print("No profit in that date range!")
     else:
+        with open("./reports_log.csv", mode="a") as reports:
+            reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
+            reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "profits", f"Requested for: {daterange} - profit is {revenue_total-original_price_total}"])
         return(revenue_total-original_price_total)
 
 
@@ -183,69 +206,100 @@ def sell(product_name, sell_price):
 def main():
     parser = argparse.ArgumentParser(description='Welcome to SuperPy!')
 
-    subparsers = parser.add_subparsers(dest='command')
+    subparsers = parser.add_subparsers(dest='base_command')
 
+    # Subparser for buy command
     buy_parser = subparsers.add_parser('buy', help='Buy a product')
     buy_parser.add_argument('--product_name', help='Name of the product')
     buy_parser.add_argument('--buy_price', type=int, help='Price of the product')
     buy_parser.add_argument('--expiration_date', help='Expiration date of the product')
 
+    # Subparser for sell command
     sell_parser = subparsers.add_parser('sell', help='Sell a product')
     sell_parser.add_argument('--product_name', help='Name of the product')
     sell_parser.add_argument('--sell_price', type=int, help='Price for selling the product')
 
-    inventory_parser = subparsers.add_parser('inventory', help='List current inventory for today')
+    # Subparser for report command
+    report_parser = subparsers.add_parser('report', help='Generate reports')
 
-    profit_parser = subparsers.add_parser('profit', help='Calculate profit')
+    # Subparsers for report command (inventory, profit, revenue)
+    report_subparsers = report_parser.add_subparsers(dest='report_command')
+
+    inventory_parser = report_subparsers.add_parser('inventory', help='List current inventory')
+
+    profit_parser = report_subparsers.add_parser('profit', help='Calculate profit')
     profit_parser.add_argument('--date', help='Specify date or date range (YYYY-MM-DD, YYYY-MM, YYYY, yesterday, today, tomorrow)')
 
-    revenue_parser = subparsers.add_parser('revenue', help='Calculate revenue')
+    revenue_parser = report_subparsers.add_parser('revenue', help='Calculate revenue')
     revenue_parser.add_argument('--date', help='Specify date or date range (YYYY-MM-DD, YYYY-MM, YYYY, yesterday, today, tomorrow)')
 
-    get_date_parser = subparsers.add_parser('today', help='Get "today" date from date file')
+    # Subparsers for date commands
+    date_parser = subparsers.add_parser('date', help='Operations related to date')
 
-    advance_date_parser = subparsers.add_parser('advance_date', help='Advance date by specified days')
+    date_subparsers = date_parser.add_subparsers(dest='date_command')
+
+    get_date_parser = date_subparsers.add_parser('today', help='Get date from date file')
+
+    advance_date_parser = date_subparsers.add_parser('advance_date', help='Advance date by specified days')
     advance_date_parser.add_argument('--days', type=int, help='Number of days to advance the date')
 
-    reset_date_parser = subparsers.add_parser('reset_date', help='Reset date to the actual today')
+    reset_date_parser = date_subparsers.add_parser('reset_date', help='Reset date to today')
 
     args = parser.parse_args()
 
-    if args.command == 'buy':
+    if args.base_command == 'buy':
         if args.product_name and args.buy_price and args.expiration_date:
             buy(args.product_name, args.buy_price, args.expiration_date)
         else:
-            print("Please provide all options for buying: --product_name, --buy_price, --expiration_date")
-    elif args.command == 'sell':
+            print("[bold red]Please provide all options for buying: --product_name, --buy_price, --expiration_date[/bold red]")
+    elif args.base_command == 'sell':
         if args.product_name and args.sell_price:
             sell(args.product_name, args.sell_price)
         else:
-            print("Please provide all options for selling: --product_name, --sell_price")
-    elif args.command == 'inventory':
-        list_inventory()
-    elif args.command == 'profit':
-        if args.date:
-            report_profit(args.date)
+            print("[bold red]Please provide all options for selling: --product_name, --sell_price[/bold red]")
+    elif args.base_command == 'report':
+        if args.report_command == 'inventory':
+            print("[bold green][Product_name, Purchase_date, Price, Expiry_date][/bold green]")
+            for i in list_inventory():
+                print(f'[blue]{i}[/blue]')
+        elif args.report_command == 'profit':
+            if args.date:
+                print(f'[bold blue]{report_profit(args.date)}[/bold blue]')
+            else:
+                print("[bold red]Please provide a date or date range for profit reporting[/bold red]")
+        elif args.report_command == 'revenue':
+            if args.date:
+                print(f'[bold blue]{report_revenue(args.date)}[/bold blue]')
+            else:
+                print("[bold red]Please provide a date or date range for revenue reporting[/bold red]")
         else:
-            print("Please provide a date or date range for profit reporting")
-    elif args.command == 'revenue':
-        if args.date:
-            report_revenue(args.date)
+            report_parser.print_help()
+    elif args.base_command == 'date':
+        if args.date_command == 'today':
+            print(f"[bold blue]We assume that today is {datetime.strftime(get_date(), '%Y-%m-%d')}.[bold blue]")
+        elif args.date_command == 'advance_date':
+            if args.days:
+                advance_date(args.days)
+                print(f"[bold blue]It is now {datetime.strftime(get_date(), '%Y-%m-%d')}, hope you are happy.[bold blue]")
+            else:
+                print("[bold red]Please provide the number of days to advance[/bold red]")
+        elif args.date_command == 'reset_date':
+            reset_date()
+            print(f"[bold blue]We are back to {datetime.strftime(get_date(), '%Y-%m-%d')}.[bold blue]")
         else:
-            print("Please provide a date or date range for revenue reporting")
-    elif args.command == 'today':
-        get_date()
-    elif args.command == 'advance_date':
-        if args.days:
-            advance_date(args.days)
-        else:
-            print("Please provide the number of days to advance")
-    elif args.command == 'reset_date':
-        reset_date()
+            date_parser.print_help()
     else:
-        print("Unknown command")
+        parser.print_help()
 
+import json
+csvfile = open('reports_log.csv', 'r')
+jsonfile = open('report_log_json.json', 'w')
 
+fieldnames = ("DateOfReport", "ActualDateOfReport", "TypeOfReport", "Result")
+reader = csv.DictReader(csvfile, fieldnames)
+for row in reader:
+    json.dump(row, jsonfile, sort_keys=False, indent=4, separators=(',', ': '))
+    jsonfile.write('\n')
 
 if __name__ == "__main__":
     main()
