@@ -4,7 +4,7 @@ Let's take a look over the functionality of this project and how to use it.
 
 ## Table of contents
 
-1. Date Functions
+1. [Date Functions](#datefunctions)
     1.1 Today
     1.2 Advance date
     1.3 Reset date
@@ -19,7 +19,7 @@ Let's take a look over the functionality of this project and how to use it.
 
 
 
-## Date Functions
+## Date Functions <a name="datefunctions"></a>
 
 ### Today
 
