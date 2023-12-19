@@ -27,11 +27,11 @@ def list_inventory():
         if (get_date()>datetime.strptime(stock_item[1], '%Y-%m-%d') and get_date()<datetime.strptime(stock_item[3], '%Y-%m-%d')):
             new_stock.append(stock_item)
     if len(new_stock)>0:
-        with open("./reports_log.csv", mode="a") as reports:
+        with open("./reports_log.csv", newline='', mode="a") as reports:
             reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
             reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "inventory", new_stock])
     else:    
-        with open("./reports_log.csv", mode="a") as reports:
+        with open("./reports_log.csv", newline='', mode="a") as reports:
             reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
             reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "inventory", "It is empty"])
     return(new_stock)
@@ -77,12 +77,12 @@ def report_revenue(daterange):
         else:
             counter+=1
     if counter==len(list_sold):
-        with open("./reports_log.csv", mode="a") as reports:
+        with open("./reports_log.csv", newline='', mode="a") as reports:
             reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
             reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "revenue", f"Requested for: {daterange} - No revenue :( )"])
         print("No revenue in that date range!")
     else:
-        with open("./reports_log.csv", mode="a") as reports:
+        with open("./reports_log.csv", newline='', mode="a") as reports:
             reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
             reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "revenue", f"Requested for: {daterange} - revenue is {revenue_total}"])
         return(revenue_total)
@@ -133,12 +133,12 @@ def report_profit(daterange):
         else:
             counter+=1
     if counter==len(list_sold):
-        with open("./reports_log.csv", mode="a") as reports:
+        with open("./reports_log.csv", newline='', mode="a") as reports:
             reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
             reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "profits", f"Requested for: {daterange} - No profits :( )"])
         print("No profit in that date range!")
     else:
-        with open("./reports_log.csv", mode="a") as reports:
+        with open("./reports_log.csv", newline='', mode="a") as reports:
             reports_writer=csv.writer(reports, delimiter=',', quotechar='"', quoting=csv.QUOTE_NONNUMERIC)
             reports_writer.writerow([datetime.strftime(get_date(), '%Y-%m-%d'), datetime.strftime(datetime.now(), '%Y-%m-%d'), "profits", f"Requested for: {daterange} - profit is {revenue_total-original_price_total}"])
         return(revenue_total-original_price_total)
