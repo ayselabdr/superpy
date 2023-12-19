@@ -53,7 +53,7 @@ A function to buy an item into our stock. It takes 3 options:</br>
 `--product_price` - price at which we bought it</br>
 `--expiration_date` - a date at which the product will expire</br>
 Stock is logged in a `stock.csv` file. Columns are:[ProductName,BoughtDate,BoughtPrice,ExpirationDate]</br>
- </br>**Important note:** Sometimes after something is bought, changes may not reflect in VSCode straight away - this is due to the way VSCode refreshes the file preview. If this is the case, just close the file editor tab and open it again.</br>
+ #### ***Important note:*** Sometimes after something is bought, changes may not reflect in VSCode straight away - this is due to the way VSCode refreshes the file preview. If this is the case, just close the file editor tab and open it again.</br>
 Use it as below:</br>
 `python3 main.py buy --product_name parrot --buy_price 5 --expiration_date 2024-01-25` </br>
 Which should give you a result like: </br>
