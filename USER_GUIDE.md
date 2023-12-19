@@ -8,9 +8,9 @@ Let's take a look over the functionality of this project and how to use it.
     1.1 [Today](#today)</br>
     1.2 [Advance date](#advancedate)</br>
     1.3 [Reset date](#resetdate)
-2. [Buy and Sell]</br>
-    2.1 [Buy]</br>
-    2.2 [Sell]
+2. [Buy and Sell](#buysell)</br>
+    2.1 [Buy](#buy)</br>
+    2.2 [Sell](#sell)
 3. [Reporting]</br>
     3.1 [List inventory]</br>
     3.2 [Report revenue]</br>
@@ -40,3 +40,26 @@ A function to reset asuumed today's date to actual real life today's date. As yo
 `python3 main.py date reset_date` </br>
 Which should give you a result like: </br>
 `We are back to 2023-12-19.`
+
+
+
+## Buy and Sell <a name="buysell"></a> 
+
+Both buy and sell functions can be found in the `buy_sell_functions.py` file.
+
+### Buy <a name="buy"></a>
+A function to buy an item into our stock. It takes 3 options:</br>
+`--product_name` - to name a product</br>
+`--product_price` - price at which we bought it</br>
+`--expiration_date` - a date at which the product will expire</br>
+Stock is logged in a `stock.csv` file. Columns are:[ProductName,BoughtDate,BoughtPrice,ExpirationDate]</br>
+ </br>**Important note:** Sometimes after something is bought, changes may not reflect in VSCode straight away - this is due to the way VSCode refreshes the file preview. If this is the case, just close the file editor tab and open it again.</br>
+Use it as below:</br>
+`python3 main.py buy --product_name parrot --buy_price 5 --expiration_date 2024-01-25` </br>
+Which should give you a result like: </br>
+`Product added to the stock, nice.`
+
+
+
+### Sell <a name="sell"></a>
+
